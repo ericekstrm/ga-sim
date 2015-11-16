@@ -8,8 +8,8 @@ public class BilVar {
     public static boolean rightBlinkers;
     
     public BilVar() {
-        speed = 3;
-        steering = -2;
+        speed = 128;
+        steering = 128;
         leftBlinkers = false;
         rightBlinkers = true;
     }
