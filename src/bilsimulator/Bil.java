@@ -40,8 +40,8 @@ public class Bil extends JFrame implements Runnable {
             }
         });
         setSize(600, 400);
-        setVisible(true);
         setLocationRelativeTo(null);
+        setVisible(true);
         panel = new JPanel();
         add(panel);
 
@@ -62,13 +62,12 @@ public class Bil extends JFrame implements Runnable {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException ioe) {
-            System.out.println("Test");
+            System.out.println("Va Fan, inte bra");
         }
         while (true) {
             try {
                 String s = in.readLine();
                 System.out.println(s);
-
                 String[] split = s.split(" ");
 
                 int speed = Integer.parseInt(split[0]);
@@ -87,9 +86,6 @@ public class Bil extends JFrame implements Runnable {
                 }
                 BilVar.speed = speed;
                 BilVar.steering = steering;
-
-                System.out.println(speed + "  " + steering);
-
             } catch (IOException ex) {
 
             }
@@ -98,20 +94,19 @@ public class Bil extends JFrame implements Runnable {
 
     private void paintThread() {
         while (true) {
-            bgi.getGraphics().clearRect(0, 0, getWidth(), getHeight());
             paint((Graphics2D) bgi.getGraphics());
             panel.getGraphics().drawImage(bgi, 0, 0, null);
         }
     }
 
     public void paint(Graphics2D g) {
-        g.clearRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, 600, 400);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
         g.setColor(Color.BLACK);
         g.drawOval(400, 70, 50, 50);
         g.drawOval(470, 70, 50, 50);
-        System.out.println(BilVar.speed + " " + BilVar.steering);
+
         //framåt
         g.setColor(Color.red);
         for (int i = 0; i < 9; i++) {
@@ -128,7 +123,6 @@ public class Bil extends JFrame implements Runnable {
             if (n >= -i) {
                 g.setColor(Color.black);
             }
-            //g.fillRect(80 + 5 * i, 330 - 12 * i, 180 - 10 * i, 8);
             g.fillRect(126 - 5 * i, 222 + 12 * i, 89 + 10 * i, 8);
         }
         //vänster
@@ -138,7 +132,6 @@ public class Bil extends JFrame implements Runnable {
             if (n >= -i) {
                 g.setColor(Color.black);
             }
-            //g.fillRect(8 + 12 * i, 85 + 5 * i, 8, 180 - 10 * i);
             g.fillRect(117 - 12 * i, 130 - 5 * i, 8, 91 + 10 * i);
         }
         //höger
@@ -150,15 +143,15 @@ public class Bil extends JFrame implements Runnable {
             }
             g.fillRect(12 * i + 215, 130 - 5 * i, 8, 90 + 10 * i);
         }
-        System.out.println(BilVar.leftBlinkers);
-        if (BilVar.leftBlinkers == true){
+
+        if (BilVar.leftBlinkers == true) {
             g.setColor(Color.yellow);
             g.fillOval(400, 70, 50, 50);
         }
-        if (BilVar.rightBlinkers == true){
+        if (BilVar.rightBlinkers == true) {
             g.setColor(Color.yellow);
             g.fillOval(470, 70, 50, 50);
-        }   
+        }
         try {
             Thread.sleep(10);
         } catch (InterruptedException ex) {
