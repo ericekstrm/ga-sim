@@ -18,7 +18,7 @@ public class Bil extends JFrame implements Runnable {
     static BufferedImage bgi = new BufferedImage(600, 400, BufferedImage.TYPE_INT_RGB);
 
     static JPanel panel;
-    String hostName = "148.136.200.190";
+    String hostName = "148.136.200.93";
     int portNumber = 25566;
 
     public static void main(String[] args) {
@@ -31,6 +31,7 @@ public class Bil extends JFrame implements Runnable {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we) {
+                //Stängar av simulatorn samt socketen och medelar servern om det
                 if (socket != null) {
                     if (!socket.isClosed()) {
                         out.println("d");
@@ -41,9 +42,11 @@ public class Bil extends JFrame implements Runnable {
         });
         setSize(600, 400);
         setLocationRelativeTo(null);
-        setVisible(true);
+        
         panel = new JPanel();
         add(panel);
+        
+        setVisible(true);
 
         Thread th = new Thread(this);
         th.start();
@@ -58,12 +61,14 @@ public class Bil extends JFrame implements Runnable {
     @Override
     public void run() {
         try {
+            //Skapar en brygga mellan servern och simulatorn
             socket = new Socket(hostName, portNumber);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException ioe) {
-            System.out.println("Va Fan, inte bra");
         }
+        
+        // Hanterar inkommande värden
         while (true) {
             try {
                 String s = in.readLine();
@@ -80,7 +85,6 @@ public class Bil extends JFrame implements Runnable {
                 int steering = Integer.parseInt(split[1]);
                 if (steering >= 128) {
                     steering -= 128;
-
                 } else {
                     steering = -steering;
                 }
@@ -102,11 +106,14 @@ public class Bil extends JFrame implements Runnable {
     public void paint(Graphics2D g) {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
-
+        
+        // Målar ut blinkers cirklarna
         g.setColor(Color.BLACK);
         g.drawOval(400, 70, 50, 50);
         g.drawOval(470, 70, 50, 50);
 
+        //målar ut rektanglar i fyra riktningar och fyller i dem utifrån inputvärden
+        
         //framåt
         g.setColor(Color.red);
         for (int i = 0; i < 9; i++) {
